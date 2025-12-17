@@ -12,11 +12,14 @@
 # need to add a random color feature for the squares and maybe
 # increase addn/delete feats
 
-from PySide6.QtWidgets import QWidget, QMainWindow, QGraphicsView, QGraphicsItem, QGraphicsScene, QToolBar, QPushButton, QMessageBox
+# maybe like a clear all feat or like an add 10 feat
+
+from PySide6.QtWidgets import QWidget, QMainWindow, QGraphicsView, QGraphicsItem, QGraphicsScene, QToolBar, QPushButton, QMessageBox, QComboBox
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QPen, QBrush, QColor
 from customGraphicsView import CustomGraphicsView
 from customGraphicsScene import CustomGraphicsScene
+import random
 
 class MainWindow(QMainWindow):
     # intalize function
@@ -24,7 +27,10 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Blocks")
 
-        self.setFixedSize(QSize(800, 600))
+        self.x_cord = 800
+        self.y_cord = 600
+
+        self.setFixedSize(QSize(self.x_cord, self.y_cord))
     
 
         # create QGraphic Scene and View
@@ -57,8 +63,6 @@ class MainWindow(QMainWindow):
         self.all_colors = [self.pink_pen, self.orange_pen, self.yellow_pen, self.green_pen,
             self.blue_pen, self.purple_pen]
 
-
-
         # add a rect
         rect1 = self.scene.addRect(50, 50, 50, 50, self.green_pen)
 
@@ -68,19 +72,30 @@ class MainWindow(QMainWindow):
         # make moveable
         rect1.setFlag(QGraphicsItem.ItemIsMovable)
 
-
-        # adding a dock widget to house instructions?
-
-        # dock = QDockWidget()
-        # self.addDockWidget(dock)
+        # making a toolbar
+        toolbar = QToolBar()
+        self.addToolBar(toolbar)
 
         # making a button to add a message box
         instructions_message = QPushButton("Instructions")
         instructions_message.clicked.connect(self.clicked_instructions)
-
-        toolbar = QToolBar()
-        self.addToolBar(toolbar)
+        # adding button to toolbar
         toolbar.addWidget(instructions_message)
+
+        # making an "add x number of blocks button"
+        self.add_combo_box = QComboBox()
+        self.add_combo_box.setPlaceholderText("Add Lots of Squares")
+        self.add_combo_box.addItem("5 squares", userData=5)
+        self.add_combo_box.addItem("10 squares", userData=10)
+        self.add_combo_box.addItem("20 squares", userData=20)
+        self.add_combo_box.addItem("50 squares", userData=50)
+        self.add_combo_box.addItem("100 squares", userData=100)
+        self.add_combo_box.setCurrentIndex(-1)
+        self.add_combo_box.activated.connect(self.on_add_combo_activation)
+
+        toolbar.addWidget(self.add_combo_box)
+
+
 
 
     def clicked_instructions(self):
@@ -94,3 +109,30 @@ class MainWindow(QMainWindow):
 
     def zoom_out(self):
         self.view.scale(0.875, 0.875)
+
+    def on_add_combo_activation(self, index):
+        # color_picked = random.choice(self.mainwindow.all_colors)
+        # new_rect = self.mainwindow.scene.addRect(100, 100, 50, 50, color_picked)
+        # # make it able to move
+        # new_rect.setFlag(QGraphicsItem.ItemIsMovable)
+
+        # converting the index to int count
+        count = 3
+        if index == 0: count = 5
+        elif index == 1: count = 10
+        elif index == 2: count = 20
+        elif index == 3: count = 50
+        else: count = 100
+
+        # for every index, make a new rect same size 
+        # but in a different location
+        # index_num = index
+        for i in range(count):
+            color_picked = random.choice(self.all_colors)
+            x_cord_funct = random.randint(0, self.x_cord)
+            y_cord_funct = random.randint(0, self.y_cord)
+
+            new_rect = self.scene.addRect(x_cord_funct, y_cord_funct, 50, 50, color_picked)
+            new_rect.setFlag(QGraphicsItem.ItemIsMovable)
+            
+        
