@@ -14,7 +14,7 @@
 
 from PySide6.QtWidgets import QWidget, QMainWindow, QGraphicsView, QGraphicsItem, QGraphicsScene, QToolBar, QPushButton, QMessageBox
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtGui import QPen, QBrush
+from PySide6.QtGui import QPen, QBrush, QColor
 from customGraphicsView import CustomGraphicsView
 from customGraphicsScene import CustomGraphicsScene
 
@@ -35,9 +35,29 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.view)
 
         # add some pens
+        self.pink_pen = QPen(QColor(255, 0, 243))
+        self.orange_pen = QPen(QColor(255, 165, 0)) 
+        self.yellow_pen = QPen(Qt.yellow)
         self.green_pen = QPen(Qt.green)
+        self.blue_pen = QPen(QColor(0, 203, 255))
+        self.purple_pen = QPen(QColor(171, 0, 255))
+        
+        # set pen width
+        self.pink_pen.setWidth(6)
+        self.orange_pen.setWidth(6)
+        self.yellow_pen.setWidth(6)
         self.green_pen.setWidth(6)
+        self.blue_pen.setWidth(6)
+        self.purple_pen.setWidth(6)
+
+        # in case i want to have brush
         green_brush = QBrush(Qt.green)
+
+        # make a list of the colors
+        self.all_colors = [self.pink_pen, self.orange_pen, self.yellow_pen, self.green_pen,
+            self.blue_pen, self.purple_pen]
+
+
 
         # add a rect
         rect1 = self.scene.addRect(50, 50, 50, 50, self.green_pen)

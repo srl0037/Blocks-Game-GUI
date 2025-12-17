@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QGraphicsView, QGraphicsScene, QMainWindow, QGraphicsItem
 from PySide6.QtGui import QKeyEvent
 from PySide6.QtCore import Qt
+import random
 
 class CustomGraphicsView (QGraphicsView):
     def __init__(self, main_window, scene,):
@@ -16,9 +17,10 @@ class CustomGraphicsView (QGraphicsView):
     def keyPressEvent(self, event: QKeyEvent):
 
         if event.key() == Qt.Key_Space:
-            print ("Space key is pressed")
             # add another square
-            new_rect = self.mainwindow.scene.addRect(100, 100, 50, 50, self.mainwindow.green_pen)
+            # make a list of pens and make a random function to pick
+            color_picked = random.choice(self.mainwindow.all_colors)
+            new_rect = self.mainwindow.scene.addRect(100, 100, 50, 50, color_picked)
             # make it able to move
             new_rect.setFlag(QGraphicsItem.ItemIsMovable)
 
