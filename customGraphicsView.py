@@ -1,6 +1,6 @@
-from PySide6.QtWidgets import QGraphicsView, QGraphicsScene, QMainWindow, QGraphicsItem
-from PySide6.QtGui import QKeyEvent
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QGraphicsView, QGraphicsScene, QMainWindow, QGraphicsItem, QRubberBand
+from PySide6.QtGui import QKeyEvent, QMouseEvent
+from PySide6.QtCore import Qt, QRect
 import random
 
 class CustomGraphicsView (QGraphicsView):
@@ -12,6 +12,22 @@ class CustomGraphicsView (QGraphicsView):
         # this ensure that the view can get keyboard focus
         self.setFocusPolicy(Qt.StrongFocus)
         self.setFocus()
+
+        # set dragMode: rubber band drag mode
+        self.setDragMode(QGraphicsView.DragMode.RubberBandDrag)
+        self.rubberBandChanged.connect(self.rubber_band_changed)
+        # self.rubberBand = QRubberBand(QRubberBand.Rectangle, self.viewport())
+
+        # set selction mode of rubberband
+        self.setRubberBandSelectionMode(Qt.IntersectsItemShape)
+
+    # zoom in an zoom out functions
+    def zoom_in(self):
+        self.scale(1.125,1.125) # the () is a scaling factor (2 times x and 2 times y)
+        # the x and y height/widths are not updating
+
+    def zoom_out(self):
+        self.scale(0.875, 0.875) 
 
     # this is the fucntion that will override the keyboard input
     def keyPressEvent(self, event: QKeyEvent):
@@ -30,6 +46,7 @@ class CustomGraphicsView (QGraphicsView):
             new_rect = self.mainwindow.scene.addRect(x_cord_funct, y_cord_funct, 50, 50, color_picked)
             # make it able to move
             new_rect.setFlag(QGraphicsItem.ItemIsMovable)
+            new_rect.setFlag(QGraphicsItem.ItemIsSelectable)
 
         else:
             super().keyPressEvent(event)
@@ -61,5 +78,12 @@ class CustomGraphicsView (QGraphicsView):
             # add this newly generated rect and make it moveable
             new_rect = self.mainwindow.scene.addRect(x_cord_funct, y_cord_funct, 50, 50, color_picked)
             new_rect.setFlag(QGraphicsItem.ItemIsMovable)
+            new_rect.setFlag(QGraphicsItem.ItemIsSelectable)
 
-    
+
+    def rubber_band_changed(self):
+        # the rubber band item are automatically selected, just need to call them
+        selected_items = self.mainwindow.scene.selectedItems() # returns a list
+        # for every item, delete
+        for item in selected_items:
+            self.mainwindow.scene.removeItem(item)

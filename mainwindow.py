@@ -1,28 +1,9 @@
-
-# game idea: ability to cmd+t and add a block, then can stack the block
-# once the blocks are stacked they are stuck. can ctrl+click on the block to
-# delete it. can also implement the zoom feature
-# maybe a block counter too?
-# maybe the ability to press a button and then it just implements a tower
-# or like a pyramid of block or like input random number and then
-# it spits out that # of blocks on the screen 
-
-# it would be fun to next highlight the area and be able to delete
-
-# need to add a random color feature for the squares and maybe
-# increase addn/delete feats
-
-# maybe like a clear all feat or like an add 10 feat
-# maybe when the zoom in/out you see the change in the window
-# dimension and then the large-scale add feat is changes
-
 from PySide6.QtWidgets import QWidget, QMainWindow, QGraphicsView, QGraphicsItem, QGraphicsScene, QToolBar, QPushButton, QMessageBox, QComboBox, QGraphicsRectItem
 from PySide6.QtCore import QSize, Qt, QPointF, QRectF
 from PySide6.QtGui import QPen, QBrush, QColor
 from customGraphicsView import CustomGraphicsView
 from customGraphicsScene import CustomGraphicsScene
 import random
-
 
 class MainWindow(QMainWindow):
     # intalize function
@@ -76,6 +57,7 @@ class MainWindow(QMainWindow):
         
         # make moveable
         rect1.setFlag(QGraphicsItem.ItemIsMovable)
+        rect1.setFlag(QGraphicsItem.ItemIsSelectable)
 
         # making a toolbar
         toolbar = QToolBar()
@@ -101,17 +83,22 @@ class MainWindow(QMainWindow):
 
         toolbar.addWidget(self.add_combo_box)
 
+        # making a clear all squares button
+        # self.remove_combo_box = QComboBox()
+        remove_button = QPushButton("Clear All Squares")
+        remove_button.clicked.connect(self.scene.clear_all_squares)
+        toolbar.addWidget(remove_button)
+
+        remove_half_button = QPushButton("Clear Half of Squares")
+        remove_half_button.clicked.connect(self.scene.clear_half_squares)
+        toolbar.addWidget(remove_half_button)
+
 
     def clicked_instructions(self):
         ret = QMessageBox.information(self, "Blocks Instructions", 
             "Press space to add square. Double click to delete square. " 
-            "Zoom in/out with ctrl+mouse scroll (cmd+mouse scroll for macOS users).", 
+            "Zoom in/out with ctrl+mouse scroll (cmd+mouse scroll for macOS users). "
+            "Drag mouse to delete multiple specific blocks.", 
             QMessageBox.Ok)
 
-    def zoom_in(self):
-        self.view.scale(1.125,1.125) # the () is a scaling factor (2 times x and 2 times y)
-        # the x and y height/widths are not updating
- 
-
-    def zoom_out(self):
-        self.view.scale(0.875, 0.875)   
+  
